@@ -1,0 +1,11 @@
+
+    <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="20" stroke="black" stroke-width="3" fill="transparent">
+            <animate attributeName="r" from="20" to="25" dur="1s" repeatCount="indefinite" />
+        </circle>
+        <line x1="55" y1="55" x2="75" y2="75" stroke="black" stroke-width="3">
+            <animate attributeName="x2" from="75" to="80" dur="1s" repeatCount="indefinite" />
+            <animate attributeName="y2" from="75" to="80" dur="1s" repeatCount="indefinite" />
+        </line>
+    </svg>
+    

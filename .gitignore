@@ -1,0 +1,36 @@
+# Ignore the virtual environment
+venv/
+
+# Ignore system and editor-specific files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Python-related
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.pytest_cache/
+
+# Configuration files (if sensitive)
+config/
+
+# Ignore logs and databases
+*.log
+*.sqlite3
+*.db
+
+
+# Ignore Docker build artifacts
+.dockerignore
+Dockerfile
+*.tar
+
+# Ignore environment variables and secrets
+.env
+.env.local
+.env.production
+.env.test

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Support AI Response</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h2>AI Tech Support Response</h2>
+
+        <div class="section">
+            <h3>Your Query</h3>
+            <p>{{ query }}</p>
+        </div>
+
+        <div class="section">
+            <h3>AI Response</h3>
+            <p>{{ response }}</p>
+        </div>
+
+        {% if assigned_team %}
+        <div class="section">
+            <h3>Assigned Team</h3>
+            <pre>{{ assigned_team.content }}</pre>
+        </div>
+        {% endif %}
+
+        {% if debt_assessment %}
+        <div class="section">
+            <h3>Technical Debt Assessment</h3>
+            <pre>{{ debt_assessment.content }}</pre>
+        </div>
+        {% endif %}
+
+        <a href="/" class="button">Go Back</a>
+    </div>
+
+</body>
+</html>
