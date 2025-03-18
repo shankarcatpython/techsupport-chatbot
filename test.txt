@@ -1,11 +1,70 @@
-Emails are not being sent from our customer support portal.
-Users are unable to log in after the latest security patch update.
-The payment processing API is rejecting all transactions.
-
-
 Duplicate claims are appearing in the system.
 Eligibility checks returned incorrect coverage status for multiple members.
+The payment processing API is rejecting all transactions.
+
+Emails are not being sent from our customer support portal.
+Users are unable to log in after the latest security patch update.
 
 How are you?
 Tell me a joke.
 What is the weather today?
+
+Agents - Flow 
+
+from flask import Flask, request, render_template, jsonify
+import pandas as pd
+import random
+from api.endpoints import api_blueprint
+from services.langchain_service import validate_technical_nature
+from services.langchain_agent import handle_query
+
+
+app = Flask(__name__, template_folder="templates", static_folder="static")
+app.register_blueprint(api_blueprint)
+
+df = pd.read_csv("data/incidents.csv")
+
+OUT_OF_DOMAIN_RESPONSES = [
+    "I'm here to assist with technical issues. Let me know if you need help with something tech-related.",
+    "I specialize in resolving IT issues. Please provide a technical problem I can assist with."
+]
+
+@app.route('/')
+def home():
+    return render_template("index.html")
+
+@app.route('/ask', methods=['POST'])
+def ask_llm():
+    user_query = request.form.get("query", "").strip().lower()
+
+    if not user_query:
+        return jsonify({"error": "Query cannot be empty"}), 400
+
+    # Validate if the query is technical
+    is_technical = validate_technical_nature(user_query)
+
+    if not is_technical:
+        return jsonify({
+            "query": user_query,
+            "response": random.choice(OUT_OF_DOMAIN_RESPONSES),
+            "assigned_team": ["User", "End"],
+            "tech_debt_suggestions": None
+        })
+
+    # Handle query using LangChain Agent
+    agent_response = handle_query(user_query)
+
+    return jsonify({
+        "query": user_query,
+        "response": agent_response
+    })
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+
+
+
+
+

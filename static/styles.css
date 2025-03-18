@@ -1,16 +1,30 @@
-/* === Updated styles.css === */
+/* === Global Styles === */
 body { 
     background-color: #eef2f7; 
     font-family: Arial, sans-serif; 
+    margin: 0;
+    padding: 0;
 }
+
+/* === Header === */
 .header { 
     background-color: #0e067d; 
     color: #fff; 
     padding: 15px; 
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
 }
+
+/* === Chat Container === */
 .chat-container { 
     margin-top: 20px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+/* Chat Box */
 .chat-box { 
     height: 450px; 
     width: 85%;
@@ -19,22 +33,28 @@ body {
     background: white; 
     border-radius: 8px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: auto;
 }
+
+/* Chat Input Group */
 .chat-input-group {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 10px;
     width: 85%;
-    margin: auto;
 }
+
+/* Chat Input */
 .chat-input {
     flex: 1;
     border-radius: 20px;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
 }
+
+/* Send Button */
 .chat-send {
     border-radius: 20px;
     padding: 10px 15px;
@@ -43,28 +63,84 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 18px;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
 }
+
+.chat-send:hover {
+    background-color: #0056b3;
+}
+
+/* === Chat Messages === */
 .message { 
-    padding: 10px; 
+    padding: 12px; 
     border-radius: 15px; 
     margin-bottom: 10px; 
     max-width: 75%;
+    word-wrap: break-word;
 }
+
+/* User Messages */
 .user-msg { 
-    background-color: #0d6efd; 
+    background-color: #0d6efd; /* Blue */
     color: white; 
     text-align: right; 
     margin-left: auto;
 }
+
+/* Bot Responses */
 .bot-msg { 
-    background-color: #f1f3f5; 
+    background-color: #f1f3f5; /* Light Gray */
     color: black; 
     text-align: left; 
     margin-right: auto;
 }
+
+/* === Agent-Specific Message Boxes === */
+
+/* Incident Analysis Box */
+.incident-analysis-box {
+    background-color: white;
+    color: black;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+    border-left: 5px solid #007bff; /* Blue left border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Incident Creation Box */
+.incident-creation-box {
+    background-color: white;
+    color: black;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+    border-left: 5px solid #28a745; /* Green left border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* === Tech Debt Agent Box (Blended Style) === */
+.tech-debt-box {
+    background-color: white; /* Same as Incident Analysis */
+    color: black;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-weight: normal;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* === Agent Styling === */
 .agent-container {
     padding: 10px;
 }
+
 .agent-box { 
     transition: all 0.3s ease; 
     border-radius: 12px;
@@ -74,10 +150,13 @@ body {
     text-align: center;
     cursor: pointer;
 }
+
 .agent-box:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
+
+/* === Lottie Animation === */
 .lottie-container {
     width: 80px; 
     height: 80px;

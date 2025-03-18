@@ -35,34 +35,23 @@ def analyze_incident(query, incident_context):
     ]
     return llm.invoke(messages)
 
-# Agent B - Create new incident
-def create_new_incident(query):
+
+def validate_technical_nature(query):
+    """
+    Uses LLM to determine if a query is technical or non-technical.
+    Expands classification to better detect IT process-related issues.
+    """
     messages = [
-        {"role": "system", "content": "You are a ServiceNow AI assistant."},
-        {"role": "user", "content": f"""
-            The following issue was reported but no matching incidents were found:
-
-            User Query: {query}
-
-            Determine if a new ServiceNow ticket should be created. If yes, provide the response strictly formatted as:
-
-            Incident Summary:
-            - Issue: <short issue summary>
-            - Description: <brief clear description of the user's issue>
-            - Recommended Next Steps: <clear recommended actions>
-        """}
+        {"role": "system", "content": "Classify whether this query is purely technical or non-technical. "
+                                      "Consider both software/system issues and IT process-related problems. "
+                                      "Respond ONLY with 'Technical' or 'Non-Technical'."},
+        {"role": "user", "content": f"Query: {query}"}
     ]
-    return llm.invoke(messages)
+    response = llm.invoke(messages)
 
-# Agent C - Reassign ticket
-def reassign_ticket(query, teams):
-    messages = [
-        {"role": "system", "content": "You are a ticket assignment AI."},
-        {"role": "user", "content": f"A support ticket has been raised with this issue:\n\n{query}\n\nBased on historical incidents, which support team should handle this issue? Choose from: {teams}."}
-    ]
-    return llm.invoke(messages)
+    return response.content.strip() == "Technical" if hasattr(response, 'content') else False
 
-# Agent D - Assess technical debt
+
 def assess_technical_debt(resolutions):
     """
     Analyzes past resolutions to identify technical debt and suggest improvements.
@@ -97,30 +86,6 @@ def assess_technical_debt(resolutions):
     
     response = llm.invoke(messages)
 
-    # Post-process response to remove duplicate "Agent: Tech Debt Agent" labels
     response_text = response.content if hasattr(response, 'content') else str(response)
     
     return response_text
-
-def validate_resolution_externally(resolutions):
-    """
-    Checks whether a suggested resolution exists in an external IT knowledge base.
-    If it is not verifiable externally, we assume it is hallucinated.
-    """
-    messages = [
-        {"role": "system", "content": "You are an AI that validates whether suggested resolutions exist in an IT troubleshooting database."},
-        {"role": "user", "content": f"""
-            Here are suggested resolutions for a technical issue:
-
-            {resolutions}
-
-            Determine if these resolutions exist in an IT troubleshooting knowledge base.
-            
-            **If they are found, return exactly:** "Resolution Verified."
-            **If they are NOT found, return exactly:** "Hallucinated Resolution Detected."
-
-            Do NOT include any additional text—only return one of the two responses above.
-        """}
-    ]
-    return llm.invoke(messages)
-

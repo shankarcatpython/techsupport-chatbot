@@ -35,6 +35,9 @@ function sendChat() {
 
     $.post('/ask', { query: query }, function (data) {
         processChatResponse(data);
+    }).fail(function () {
+        appendMessage("bot-msg error-msg", "Error processing your request. Please try again.");
+        resetFlow();
     });
 }
 
@@ -42,7 +45,7 @@ function processChatResponse(data) {
     resetAgents();
     resetFlow();
 
-    let flowSteps = ["User"]; // Start with User dynamically
+    let flowSteps = ["User"];
 
     setTimeout(() => {
         if (data.assigned_team.includes("Incident Analysis")) {
@@ -52,7 +55,7 @@ function processChatResponse(data) {
     }, 500);
 
     setTimeout(() => {
-        if (data.assigned_team.includes("Tech Debt Analysis")) {
+        if (data.assigned_team.includes("Tech Debt Analysis") && data.tech_debt_suggestions) {
             activateAgent('debt_agent');
             flowSteps.push("Tech Debt Analysis");
         }
@@ -60,7 +63,7 @@ function processChatResponse(data) {
 
     setTimeout(() => {
         if (data.assigned_team.includes("Incident Creation") || data.incident_number) {
-            activateAgent('creation_agent'); // ✅ Fix: Activate Creation Agent
+            activateAgent('creation_agent');
             flowSteps.push("Create Incident");
         }
     }, 1200);
@@ -71,11 +74,11 @@ function processChatResponse(data) {
 
         let techDebtContent = generateTechDebtContent(data.tech_debt_suggestions);
         if (techDebtContent) {
-            appendMessage("bot-msg", techDebtContent);
+            appendMessage("tech-debt-msg highlight-box", techDebtContent); // 🔥 Highlighted Box for Tech Debt
         }
 
         flowSteps.push("End");
-        updateFlow(flowSteps.join(" ➝ ")); // Ensure dynamic order update
+        updateFlow(flowSteps.join(" ➝ "));
     }, 1500);
 }
 
@@ -88,7 +91,7 @@ function resetAgents() {
 }
 
 function resetFlow() {
-    $('#flow-box').text("Standing by"); // Reset to "Standing by"
+    $('#flow-box').text("Standing by");
 }
 
 function updateFlow(newFlowText) {
@@ -100,8 +103,8 @@ function updateFlow(newFlowText) {
     flowBox.text(newFlowText);
 }
 
-function appendMessage(className, message, id = "") {
-    let msgElement = `<div class="message ${className}" ${id ? `id="${id}"` : ''}>${message}</div>`;
+function appendMessage(className, message) {
+    let msgElement = `<div class="message ${className}">${message}</div>`;
     $('#chat_box').append(msgElement);
     $('#chat_box').scrollTop($('#chat_box')[0].scrollHeight);
 }
@@ -111,20 +114,23 @@ function formatResponse(response) {
 }
 
 function generateTechDebtContent(techDebt) {
-    if (!techDebt || techDebt === "No significant tech debt identified.") return "";    
+    if (!techDebt || techDebt === "No significant tech debt identified.") return "";
 
-    let formattedTechDebt = techDebt
-        .replace(/Agent: Tech Debt Agent\s+/g, "") // Remove duplicate agent labels
-        .replace(/\n/g, "<br>")                    // Ensure new lines render in HTML
-        .replace(/- /g, "- ");                     // Convert "-" to "•" for better readability
+    // Ensure "Agent: Tech Debt Agent" isn't added twice
+    if (!techDebt.includes("Agent: Tech Debt Agent")) {
+        techDebt = `<strong>Agent: Tech Debt Agent</strong><br><br>` + techDebt;
+    }
 
-    return `Agent: Tech Debt Agent<br><br>
-        ${formattedTechDebt}`;
+    return `
+        <div class="tech-debt-box highlight-box">
+            ${techDebt.replace(/\n/g, "<br>")}
+        </div>`;
 }
 
+
 function resetChat() {
-    $('#chat_box').empty(); // Clear the chat box
-    $('#user_input').val(''); // Reset the input box
-    resetFlow(); // Reset flow to "Standing by"
-    resetAgents(); // Remove agent highlights
+    $('#chat_box').empty();
+    $('#user_input').val('');
+    resetFlow();
+    resetAgents();
 }
